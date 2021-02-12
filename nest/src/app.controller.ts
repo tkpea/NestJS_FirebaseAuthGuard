@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppService } from './app.service';
+import { FirebaseAuthGuard } from './common/firebase-auth.guard';
 
 @Controller()
 export class AppController {
@@ -9,4 +11,11 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
+  @Get("/me")
+  getMe(@Request() req): string {
+    return req.user;
+  }  
 }
